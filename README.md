@@ -69,6 +69,7 @@ docker-compose up -d
 ```
 
 4. **Access the applications:**
+python -m streamlit run streamlit_ui.py --server.port 8501
 - **Streamlit UI**: http://localhost:8501
 - **API Documentation**: http://localhost:8000/docs
 - **PostgreSQL**: localhost:5432
