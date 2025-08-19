@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: dental_eligibility_db
+    environment:
+      POSTGRES_DB: dental_eligibility
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dental_network
+
+  # Redis for Celery
+  redis:
+    image: redis:7-alpine
+    container_name: dental_eligibility_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dental_network
+
+  # FastAPI Backend
+  api:
+    build: .
+    container_name: dental_eligibility_api
+    command: uvicorn api_service:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password123@postgres:5432/dental_eligibility
+      - REDIS_URL=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - INSURANCE_API_URL=${INSURANCE_API_URL}
+      - INSURANCE_API_KEY=${INSURANCE_API_KEY}
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - dental_network
+
+  # Celery Worker
+  celery_worker:
+    build: .
+    container_name: dental_eligibility_worker
+    command: celery -A api_service.celery_app worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:password123@postgres:5432/dental_eligibility
+      - REDIS_URL=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - INSURANCE_API_URL=${INSURANCE_API_URL}
+      - INSURANCE_API_KEY=${INSURANCE_API_KEY}
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - dental_network
+
+  # Celery Beat (for scheduled tasks)
+  celery_beat:
+    build: .
+    container_name: dental_eligibility_beat
+    command: celery -A api_service.celery_app beat --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://postgres:password123@postgres:5432/dental_eligibility
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - dental_network
+
+  # Streamlit UI
+  ui:
+    build: .
+    container_name: dental_eligibility_ui
+    command: streamlit run streamlit_ui.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - API_BASE_URL=http://api:8000/api/v1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - .:/app
+    depends_on:
+      - api
+    networks:
+      - dental_network
+
+networks:
+  dental_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
