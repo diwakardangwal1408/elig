@@ -1,0 +1,26 @@
+# Trading and Market Data
+kiteconnect==4.2.0
+pandas==2.1.4
+numpy==1.24.3
+ta==0.10.2
+
+# Configuration and Environment
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Logging and Monitoring
+structlog==23.2.0
+rich==13.7.0
+
+# Database (Optional - for trade history)
+sqlalchemy==2.0.23
+sqlite3
+
+# Scheduling and Background Tasks
+schedule==1.2.0
+threading
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3
