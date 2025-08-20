@@ -1,0 +1,203 @@
+<div class="dental-app">
+  <!-- Header -->
+  <header class="optum-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <svg class="optum-logo" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+          <text x="10" y="35" font-family="Inter, sans-serif" font-size="24" font-weight="bold" fill="white">OPTUM</text>
+          <circle cx="170" cy="30" r="15" fill="#FF6900" opacity="0.8"/>
+        </svg>
+        <div class="header-text">
+          <h1 class="header-title">Dental System</h1>
+          <p class="header-subtitle">AI Processing</p>
+        </div>
+      </div>
+      <div class="header-status">🦷</div>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="nav-header">
+        <div class="nav-title">🧭 Navigation</div>
+      </div>
+      
+      <div class="nav-info">
+        ℹ️ Use the dropdown below or buttons to switch between pages.
+      </div>
+      
+      <div class="page-selector">
+        <label>🏠 Select Page:</label>
+        <select [(ngModel)]="currentPage" class="page-dropdown">
+          <option value="dashboard">📊 Dashboard</option>
+          <option value="data-upload">📤 Data Upload</option>
+          <option value="batch-processing">⚡ Batch Processing</option>
+          <option value="member-search">🔍 Member Search</option>
+          <option value="analytics">📈 Analytics</option>
+        </select>
+      </div>
+      
+      <div class="current-page">
+        <div class="current-page-content">
+          📍 <strong>Current:</strong> {{getCurrentPageLabel()}}
+        </div>
+      </div>
+      
+      <div class="nav-buttons">
+        <div class="nav-buttons-header">
+          <div class="nav-buttons-title">🧭 Navigation</div>
+        </div>
+        <div class="nav-buttons-grid">
+          <button 
+            *ngFor="let item of navigationItems"
+            (click)="setCurrentPage(item.value)"
+            [class]="'nav-button ' + (currentPage === item.value ? 'active' : '')"
+            [title]="item.label">
+            {{item.label}}
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="page-breadcrumb">
+        🏠 <strong>Home</strong> › <strong>{{getCurrentPageLabel()}}</strong>
+      </div>
+
+      <!-- Dashboard -->
+      <div *ngIf="currentPage === 'dashboard'" class="page-content">
+        <div class="dashboard-container fade-in">
+          <!-- Metrics Row -->
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-value">12,458</div>
+              <div class="metric-label">Total Members</div>
+              <div class="metric-change">↑ +234</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">89</div>
+              <div class="metric-label">Processed Today</div>
+              <div class="metric-change">↑ +12</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">96.2%</div>
+              <div class="metric-label">Success Rate</div>
+              <div class="metric-change">↑ +1.1%</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-value">2.3s</div>
+              <div class="metric-label">Avg Processing Time</div>
+              <div class="metric-change">↓ -0.4s</div>
+            </div>
+          </div>
+
+          <!-- Activity Section -->
+          <div class="activity-section">
+            <div class="modern-card">
+              <div class="card-header">
+                <div class="card-icon">📋</div>
+                <h3 class="card-title">Recent Processing Activity</h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Source</th>
+                    <th>Records</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Just now</td>
+                    <td>📧 Email</td>
+                    <td>15</td>
+                    <td><span class="status-badge status-completed">Completed</span></td>
+                  </tr>
+                  <tr>
+                    <td>1 hour ago</td>
+                    <td>📊 Excel Upload</td>
+                    <td>47</td>
+                    <td><span class="status-badge status-processing">Processing</span></td>
+                  </tr>
+                  <tr>
+                    <td>2 hours ago</td>
+                    <td>✍️ Manual Entry</td>
+                    <td>3</td>
+                    <td><span class="status-badge status-completed">Completed</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Upload -->
+      <div *ngIf="currentPage === 'data-upload'" class="page-content">
+        <div class="modern-card">
+          <div class="card-header">
+            <div class="card-icon">📤</div>
+            <h3 class="card-title">Data Upload & Processing</h3>
+          </div>
+          <p>Upload and parse eligibility data from multiple sources</p>
+          
+          <div class="upload-section">
+            <h4>📧 Email Content</h4>
+            <textarea 
+              placeholder="Paste email content here..."
+              class="email-textarea">
+            </textarea>
+            <button class="optum-button">🔍 Parse Email</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch Processing -->
+      <div *ngIf="currentPage === 'batch-processing'" class="page-content">
+        <div class="modern-card">
+          <div class="card-header">
+            <div class="card-icon">⚡</div>
+            <h3 class="card-title">Batch Processing & Review</h3>
+          </div>
+          <div class="info-message">
+            📝 No items in current batch. Please upload data first using the Data Upload section.
+          </div>
+        </div>
+      </div>
+
+      <!-- Member Search -->
+      <div *ngIf="currentPage === 'member-search'" class="page-content">
+        <div class="modern-card">
+          <div class="card-header">
+            <div class="card-icon">🔍</div>
+            <h3 class="card-title">Member Eligibility Search</h3>
+          </div>
+          <div class="search-form">
+            <div class="form-row">
+              <input type="text" placeholder="Member ID" class="form-input">
+              <input type="text" placeholder="Policy Number" class="form-input">
+              <button class="optum-button">🔍 Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div *ngIf="currentPage === 'analytics'" class="page-content">
+        <div class="modern-card">
+          <div class="card-header">
+            <div class="card-icon">📈</div>
+            <h3 class="card-title">Analytics & Reports</h3>
+          </div>
+          <p>View processing statistics and generate reports</p>
+          <div class="analytics-placeholder">
+            📊 Analytics dashboard coming soon...
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
